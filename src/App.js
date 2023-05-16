@@ -101,14 +101,14 @@ const App = () => {
         </Row>
 
         <hr />
-        <Row>
+        {/* <Row>
           Go to About Page{" "}
           <InputGroup>
             <Link to="/about" variant="dark" className="mt-2">
               About
             </Link>
           </InputGroup>
-        </Row>
+        </Row> */}
         <Row>
           <Col md={{ span: 5, offset: 4 }}>
             <InputGroup className="mb-3">
