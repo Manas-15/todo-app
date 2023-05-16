@@ -11,8 +11,11 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   const [userInput, setUserInput] = useState("");
-  const [list, setList] = useState([]);
-  const [todoItems, setTodoItems] = useState([]);
+  const [todoItems, setTodoItems] = useState(
+    JSON.parse(localStorage.getItem("TodoList"))
+      ? JSON.parse(localStorage.getItem("TodoList"))
+      : []
+  );
 
   const updateInput = (value) => {
     setUserInput(value);
@@ -23,30 +26,42 @@ const Home = () => {
       const todoItem = {
         id: Math.random(),
         value: userInput,
+        status: false,
       };
       if (todoItem) {
-        setList([...list, todoItem]);
+        var blankArray = [];
+        const checkdata = JSON.parse(localStorage.getItem("TodoList"));
+        if (checkdata && checkdata.length > 0) {
+          blankArray = checkdata;
+        }
+        // const blankArray = [];
+        blankArray.push(todoItem);
+        localStorage.setItem("TodoList", JSON.stringify(blankArray));
+        setItem();
       }
     }
     setUserInput("");
   };
-  console.log(list, "::::::::::::::::::::::::");
-
-  useEffect(() => {
-    const setTodoList = JSON.stringify(list);
-    localStorage.setItem("TodoList", setTodoList);
-  }, [list]);
-  useEffect(() => {
-    const getTodoList = JSON.parse(localStorage.getItem("TodoList"));
-    setTodoItems(getTodoList);
-  }, [list]);
-
-  console.log(todoItems, "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+  const setItem = () => {
+    setTodoItems(JSON.parse(localStorage.getItem("TodoList")));
+  };
 
   const deleteItem = (ID) => {
     console.log(ID);
     const updateList = todoItems.filter((item) => item.id !== ID);
-    setList(updateList);
+    localStorage.setItem("TodoList", JSON.stringify(updateList));
+    setItem();
+  };
+  const handleChange = (e, index) => {
+    console.log(index);
+    const todoItem = {
+      id: Math.random(),
+      value: todoItems[index].value,
+      status: e.target.checked,
+    };
+    todoItems[index] = todoItem;
+    localStorage.setItem("TodoList", JSON.stringify(todoItems));
+    setItem();
   };
   return (
     <>
@@ -97,9 +112,14 @@ const Home = () => {
         <Row>
           <Col md={{ span: 5, offset: 4 }}>
             <div>
-              {todoItems.map((item) => {
+              {todoItems?.map((item, index) => {
                 return (
                   <div className="d-flex mb-3">
+                    <input
+                      defaultChecked={item.status}
+                      type="checkbox"
+                      onChange={(e) => handleChange(e, index)}
+                    />
                     <ListGroup.Item variant="dark" action>
                       {item.value}
                     </ListGroup.Item>
@@ -113,6 +133,11 @@ const Home = () => {
             </div>
           </Col>
         </Row>
+        <h3>
+          Incomplete Task:
+          {todoItems?.filter((item, index) => item.status === false).length}
+        </h3>
+        <h3>Total Task:{todoItems?.length}</h3>
       </Container>
     </>
   );
