@@ -8,11 +8,10 @@ import About from "./About";
 function App() {
   return (
     <div className="App">
-      <h2> APP Page</h2>
-      {/* <Routes>
+      <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-      </Routes> */}
+      </Routes>
     </div>
   );
 }
